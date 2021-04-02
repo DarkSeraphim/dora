@@ -1,0 +1,21 @@
+version: 2.1
+workflows:
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run: |
+          echo "$DOCKER_PASS" | docker login $DOCKER_REGISTRY --username $DOCKER_USER --password-stdin
+          echo "export DOCKER_TAG=$(echo << pipeline.git.tag >> | sed 's/v//')" >> $BASH_ENV
+      - run: docker build -t $DOCKER_REGISTRY/dora:$DOCKER_TAG .
+      - run: docker push $DOCKER_REGISTRY/dora:$DOCKER_TAG
+
