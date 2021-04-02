@@ -1,4 +1,6 @@
-# Dora, a git backed web server
+![CircleCI](https://img.shields.io/circleci/build/github/jeroenvand/dora?token=8595ad7addfb1cdf879f609a55f151fd0e8ef73c)
+
+# Dora: a git backed web server
 
 Dora is a web server that serves static content from a
 git repository. 
