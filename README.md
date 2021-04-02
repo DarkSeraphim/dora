@@ -1,16 +1,17 @@
-# Dora the web server 
+# Dora, a git backed web server
 
 Dora is a web server that serves static content from a
-github repository.
+git repository. 
 
-You supply it with a github repository url and a deploy key. On
+It is known to work with GitHub, although it probably also works with Gitlab or Gitea.
+
+You supply it with a repository url and a deploy key. On
 start-up Dora clones the repo and starts serving files.
 
-Optionally you can configure a github webhook to get 
-update-on-push.
+Optionally you can configure a webhook to get update-on-push functionality.
 
-By default Dora only serves files from a sub-directory named
-"public", but you can override this.
+By default, Dora only serves files from a sub-directory named
+"public". You can override this, see Configuration below.
 
 ## Configuration
 
@@ -20,10 +21,22 @@ Dora is configured via the following environment variables:
 
  - BRANCH: the branch to checkout, defaults to "main"
 
- - DEPLOY_KEY: private key for repo access
+ - DEPLOY_KEY: private key for repo access, should be a base64 encoded pem file. Configure the public part as
+   a deploy key for your git repo.
 
  - HOOK_SECRET: secret for securing the git webhook. If not set any hook request is accepted.
-   
- - DOCUMENT_ROOT: directory to serve from, defaults to 'public'
 
  - HOOK_ENDPOINT: the path on which Dora listens for github webhooks, defaults to "/__pull"
+  
+ - DOCUMENT_ROOT: directory to serve from, defaults to "public"
+
+ - CLONE_DIR: directory to clone repo in, defaults to "/var/www"
+
+ - MOUNT_POINT: path to serve the site from, defaults to "/"
+
+ - PORT: port to listen on, defaults to 8080
+
+## TLS support
+
+Dora currently has no support for TLS out of the box. It is meant to be put behind a load balancer / proxy that 
+takes care of TLS termination.

@@ -1,5 +1,25 @@
 package main
 
+/*
+
+Copyright (c) 2021 Jeroen van Dongen
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+
+*/
+
 import (
 	"crypto/hmac"
 	"crypto/sha256"
@@ -155,15 +175,15 @@ func main() {
 		HookEndpoint string `default:"/__pull" split_words:"true"`
 		HookSecret string `split_words:"true"`
 		DocumentRoot  string `default:"public" split_words:"true"`
-		MountPoint string `default:"/", split_words="true"`
+		MountPoint string `default:"/" split_words:"true"`
 		CloneDir      string `default:"/var/www" split_words:"true"`
 		Port          int    `default:"8080"`
 	}
 	envconfig.MustProcess("", &config)
 
-	log.Printf("Dora %s\n", Version)
+	log.Printf("Dora %s starting ...\n", Version)
 
-	fmt.Printf("Preparing repo %s:%s\n", config.RepoURL, config.Branch)
+	log.Printf("Preparing repo %s:%s\n", config.RepoURL, config.Branch)
 	deployKey, err := base64.StdEncoding.DecodeString(config.DeployKey)
 	if err != nil {
 		panic(fmt.Errorf("error decoding deploy key: %w", err))
