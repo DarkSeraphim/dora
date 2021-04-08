@@ -2,7 +2,6 @@ FROM golang
 
 #ARG repo
 #ARG version
-
 WORKDIR /
 ADD . /go/src/$repo
 WORKDIR /go/src/$repo

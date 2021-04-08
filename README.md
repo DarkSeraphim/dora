@@ -17,7 +17,7 @@ By default, Dora only serves files from a sub-directory named
 
 Dora is configured via the following environment variables:
 
- - REPO_URL: the repo url in the format git@github.com/...
+ - REPO_URL: the repo url in the format git@github.com:...
 
  - BRANCH: the branch to checkout, defaults to "main"
 

@@ -36,6 +36,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"github.com/abbot/go-http-auth"
+	"time"
 )
 
 var Version string
@@ -112,17 +114,17 @@ func (rh *RepoHandler) Pull() error {
 }
 
 func (rh *RepoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		err := rh.Pull()
-		if err != nil {
-			if err != git.NoErrAlreadyUpToDate {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-		}
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
-	}
+	//if r.Method == "GET" {
+	//	err := rh.Pull()
+	//	if err != nil {
+	//		if err != git.NoErrAlreadyUpToDate {
+	//			http.Error(w, err.Error(), http.StatusInternalServerError)
+	//			return
+	//		}
+	//	}
+	//	http.Redirect(w, r, "/", http.StatusFound)
+	//	return
+	//}
 
 	if r.Method != "POST" {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
@@ -178,6 +180,8 @@ func main() {
 		MountPoint string `default:"/" split_words:"true"`
 		CloneDir      string `default:"/var/www" split_words:"true"`
 		Port          int    `default:"8080"`
+		BasicAuth 	map[string]string
+
 	}
 	envconfig.MustProcess("", &config)
 
@@ -201,7 +205,21 @@ func main() {
 		panic(fmt.Errorf("error cloning repo: %w", err))
 	}
 
+
 	fileServer := http.FileServer(FileSystem{http.Dir(filepath.Join(config.CloneDir, config.DocumentRoot))})
+
+	if len(config.BasicAuth) > 0 {
+		htpasswd := map[string]string{}
+		for user, pass := range config.BasicAuth {
+			htpasswd[user] = string(auth.MD5Crypt([]byte(pass), []byte(time.Now().String()), []byte("1")))
+		}
+		authenticator := auth.NewBasicAuthenticator("authentication required", func(user, realm string) string {
+			passwd, ok := htpasswd[user]
+			if !ok { return "" }
+			return passwd
+		})
+		fileServer = auth.JustCheck(authenticator, fileServer.ServeHTTP)
+	}
 
 	http.Handle(config.HookEndpoint, &repoHandler)
 	http.Handle(config.MountPoint, fileServer)
