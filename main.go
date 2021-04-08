@@ -26,6 +26,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"github.com/abbot/go-http-auth"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
@@ -36,8 +37,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"github.com/abbot/go-http-auth"
-	"time"
 )
 
 var Version string
@@ -211,7 +210,7 @@ func main() {
 	if len(config.BasicAuth) > 0 {
 		htpasswd := map[string]string{}
 		for user, pass := range config.BasicAuth {
-			htpasswd[user] = string(auth.MD5Crypt([]byte(pass), []byte(time.Now().String()), []byte("1")))
+			htpasswd[user] = string(auth.MD5Crypt([]byte(pass), []byte("$" + auth.RandomKey()), []byte("$1")))
 			log.Printf("Adding user %s:%s\n", user, htpasswd[user])
 		}
 		authenticator := auth.NewBasicAuthenticator("authentication required", func(user, realm string) string {
