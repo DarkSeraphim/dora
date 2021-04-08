@@ -208,15 +208,17 @@ func main() {
 	fileServer := http.FileServer(FileSystem{http.Dir(filepath.Join(config.CloneDir, config.DocumentRoot))})
 
 	if len(config.BasicAuth) > 0 {
+		log.Println("Enabling basic authentication")
+
 		htpasswd := map[string]string{}
 		for user, pass := range config.BasicAuth {
 			htpasswd[user] = string(auth.MD5Crypt([]byte(pass), []byte(auth.RandomKey()), []byte("$1$")))
-			log.Printf("Adding user %s:%s\n", user, htpasswd[user])
+			log.Printf("Adding user %s\n", user)
 		}
 		authenticator := auth.NewBasicAuthenticator("authentication required", func(user, realm string) string {
 			passwd, ok := htpasswd[user]
 			if !ok { return "" }
-			log.Printf("getting secret for user %s: %s\n", user, passwd)
+			log.Printf("authenticated request for user %s\n", user)
 			return passwd
 		})
 		fileServer = auth.JustCheck(authenticator, fileServer.ServeHTTP)
