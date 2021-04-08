@@ -1,12 +1,13 @@
 FROM golang
 
-ARG repo
-ARG version
+#ARG repo
+#ARG version
 
 WORKDIR /
 ADD . /go/src/$repo
 WORKDIR /go/src/$repo
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-X $repo/main.Version=$version" -ldflags "-s" -a -o ./main
+#RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-X $repo/main.Version=$version" -ldflags "-s" -a -o ./main
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s" -a -o ./main
 
 FROM alpine:latest
 ARG repo

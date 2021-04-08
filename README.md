@@ -21,8 +21,8 @@ Dora is configured via the following environment variables:
 
  - BRANCH: the branch to checkout, defaults to "main"
 
- - DEPLOY_KEY: private key for repo access, should be a base64 encoded pem file. Configure the public part as
-   a deploy key for your git repo.
+ - DEPLOY_KEY: private key for repo access, should be a string containing the base64 encoded private key pem file. 
+   Configure the public part as a deploy key for your git repo.
 
  - HOOK_SECRET: secret for securing the git webhook. If not set any hook request is accepted.
 
