@@ -227,6 +227,6 @@ func main() {
 	http.Handle(config.HookEndpoint, &repoHandler)
 	http.Handle(config.SiteRoot, fileServer)
 
-	log.Printf("Serving %s on HTTP port: %s\n", config.DocumentRoot, config.Port)
+	log.Printf("Serving %s on HTTP port: %v\n", config.DocumentRoot, config.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", config.Port), nil))
 }
