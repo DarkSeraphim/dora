@@ -210,7 +210,7 @@ func main() {
 	if len(config.BasicAuth) > 0 {
 		htpasswd := map[string]string{}
 		for user, pass := range config.BasicAuth {
-			htpasswd[user] = string(auth.MD5Crypt([]byte(pass), []byte("$" + auth.RandomKey()), []byte("$1")))
+			htpasswd[user] = string(auth.MD5Crypt([]byte(pass), []byte(auth.RandomKey()), []byte("$1$")))
 			log.Printf("Adding user %s:%s\n", user, htpasswd[user])
 		}
 		authenticator := auth.NewBasicAuthenticator("authentication required", func(user, realm string) string {
