@@ -176,7 +176,7 @@ func main() {
 		HookEndpoint string `default:"/__pull" split_words:"true"`
 		HookSecret string `split_words:"true"`
 		DocumentRoot  string `default:"public" split_words:"true"`
-		MountPoint string `default:"/" split_words:"true"`
+		SiteRoot string `default:"/" split_words:"true"`
 		CloneDir      string `default:"/var/www" split_words:"true"`
 		Port          int    `default:"8080"`
 		BasicAuth 	map[string]string
@@ -225,7 +225,7 @@ func main() {
 	}
 
 	http.Handle(config.HookEndpoint, &repoHandler)
-	http.Handle(config.MountPoint, fileServer)
+	http.Handle(config.SiteRoot, fileServer)
 
 	log.Printf("Serving %s on HTTP port: %s\n", config.DocumentRoot, config.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", config.Port), nil))

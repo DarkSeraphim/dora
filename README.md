@@ -17,12 +17,12 @@ By default, Dora only serves files from a sub-directory named
 
 Dora is configured via the following environment variables:
 
- - REPO_URL: the repo url in the format git@github.com:...
+ - REPO_URL: the repo url in the format git@github.com:myaccount/myrepo.git
 
  - BRANCH: the branch to checkout, defaults to "main"
 
- - DEPLOY_KEY: private key for repo access, should be a string containing the base64 encoded private key pem file. 
-   Configure the public part as a deploy key for your git repo.
+ - DEPLOY_KEY: private key for repo access, should be a one-line string containing the base64 encoded private 
+   ssh key. Configure the public part as a deploy key for your git repo.
 
  - HOOK_SECRET: secret for securing the git webhook. If not set any hook request is accepted.
 
@@ -32,7 +32,7 @@ Dora is configured via the following environment variables:
 
  - CLONE_DIR: directory to clone repo in, defaults to "/var/www"
 
- - MOUNT_POINT: path to serve the site from, defaults to "/"
+ - SITE_ROOT: path to serve the site from, defaults to "/"
 
  - PORT: port to listen on, defaults to 8080
 
