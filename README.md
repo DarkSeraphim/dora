@@ -36,6 +36,11 @@ Dora is configured via the following environment variables:
 
  - PORT: port to listen on, defaults to 8080
 
+ - BASICAUTH: optional, if set basic authentication is enabled for the entire site, except for the git webhook requests.
+   Use the HOOK_SECRET to protect that endpoint. Should be set to a comma-separated list of user:password pairs, 
+   e.g. "user1:pass1,user2:pass2"
+   
+
 ## TLS support
 
 Dora currently has no support for TLS out of the box. It is meant to be put behind a load balancer / proxy that 
