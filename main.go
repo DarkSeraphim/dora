@@ -216,6 +216,7 @@ func main() {
 		authenticator := auth.NewBasicAuthenticator("authentication required", func(user, realm string) string {
 			passwd, ok := htpasswd[user]
 			if !ok { return "" }
+			log.Printf("getting secret for user %s: %s\n", user, passwd)
 			return passwd
 		})
 		fileServer = auth.JustCheck(authenticator, fileServer.ServeHTTP)
