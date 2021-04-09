@@ -75,7 +75,7 @@ func (fs FileSystem) Open(path string) (http.File, error) {
 
 func (rh *RepoHandler) Clone() error {
 	sshKeys, err := ssh.NewPublicKeys("git", rh.DeployKey, rh.DeployKeyPass)
-	if err != nil { return err }
+	if err != nil { return fmt.Errorf("error reading deploykey: %w", err) }
 
 	r, err := git.PlainClone(rh.CloneDir, false, &git.CloneOptions{
 		// The intended use of a GitHub personal access token is in replace of your password
@@ -85,13 +85,14 @@ func (rh *RepoHandler) Clone() error {
 		URL:      rh.RepoURL,
 		Progress: os.Stdout,
 	})
-	if err != nil { return err }
+	if err != nil { return fmt.Errorf("clone failed: %w", err) }
 	w, err := r.Worktree()
-	if err != nil { return err }
+	if err != nil { return fmt.Errorf("error getting worktree: %w", err) }
 	err = w.Checkout(&git.CheckoutOptions{
 		Branch: plumbing.NewBranchReferenceName(rh.Branch),
+		Force: true,
 	})
-	if err != nil { return err }
+	if err != nil { return fmt.Errorf("checkout failed: %w", err) }
 	return nil
 }
 
