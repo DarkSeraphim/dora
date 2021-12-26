@@ -31,6 +31,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/transport/ssh"
 	"github.com/kelseyhightower/envconfig"
+	ssh2 "golang.org/x/crypto/ssh"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -76,7 +77,7 @@ func (fs FileSystem) Open(path string) (http.File, error) {
 func (rh *RepoHandler) Clone() error {
 	sshKeys, err := ssh.NewPublicKeys("git", rh.DeployKey, rh.DeployKeyPass)
 	if err != nil { return fmt.Errorf("error reading deploykey: %w", err) }
-
+	sshKeys.HostKeyCallback = ssh2.InsecureIgnoreHostKey()
 	r, err := git.PlainClone(rh.CloneDir, false, &git.CloneOptions{
 		// The intended use of a GitHub personal access token is in replace of your password
 		// because access tokens can easily be revoked.
