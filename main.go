@@ -54,6 +54,7 @@ type RepoHandler struct {
 	DeployKeyPass string
 	Branch string
 	CloneDir string
+	InsecureIgnoreHostKey bool
 }
 // Open opens file
 func (fs FileSystem) Open(path string) (http.File, error) {
@@ -77,7 +78,9 @@ func (fs FileSystem) Open(path string) (http.File, error) {
 func (rh *RepoHandler) Clone() error {
 	sshKeys, err := ssh.NewPublicKeys("git", rh.DeployKey, rh.DeployKeyPass)
 	if err != nil { return fmt.Errorf("error reading deploykey: %w", err) }
-	sshKeys.HostKeyCallback = ssh2.InsecureIgnoreHostKey()
+	if rh.InsecureIgnoreHostKey {
+		sshKeys.HostKeyCallback = ssh2.InsecureIgnoreHostKey()
+	}
 	r, err := git.PlainClone(rh.CloneDir, false, &git.CloneOptions{
 		// The intended use of a GitHub personal access token is in replace of your password
 		// because access tokens can easily be revoked.
@@ -182,7 +185,7 @@ func main() {
 		CloneDir      string `default:"/var/www" split_words:"true"`
 		Port          int    `default:"8080"`
 		BasicAuth 	map[string]string
-
+		InsecureIgnoreHostKey bool `default:"false"`
 	}
 	envconfig.MustProcess("", &config)
 
@@ -200,6 +203,7 @@ func main() {
 		Branch: config.Branch,
 		CloneDir: config.CloneDir,
 		HookSecret: config.HookSecret,
+		InsecureIgnoreHostKey: config.InsecureIgnoreHostKey,
 	}
 	err = repoHandler.Clone()
 	if err != nil {

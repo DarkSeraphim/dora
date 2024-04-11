@@ -18,6 +18,7 @@ ENV SSH_KNOWN_HOSTS=/root/.ssh/known_hosts
 
 WORKDIR /root/
 COPY --from=0 /go/src/$repo/main .
-CMD ["/root/main"]
+COPY --chmod=755 entrypoint.sh /root/entrypoint.sh
+CMD ["/root/entrypoint.sh"]
 
 
